@@ -36,7 +36,9 @@ class StudentOnboardingSerializer(serializers.ModelSerializer):
             "(e.g. STU-2026-00417)."
         },
     )
-    full_name = serializers.CharField(min_length=2, max_length=150, trim_whitespace=True)
+    full_name = serializers.CharField(
+        min_length=2, max_length=150, trim_whitespace=True
+    )
     date_of_birth = serializers.DateField()
     assigned_lsa_email = serializers.EmailField()
     learning_needs = serializers.CharField(
@@ -93,7 +95,9 @@ class StudentOnboardingSerializer(serializers.ModelSerializer):
         # data cannot be onboarded at all without guardian consent.
         if attrs["guardian_consent_given"] == "NO":
             raise serializers.ValidationError(
-                {"guardian_consent_given": "Cannot onboard a student without guardian consent."}
+                {
+                    "guardian_consent_given": "Cannot onboard a student without guardian consent."
+                }
             )
 
         return attrs
