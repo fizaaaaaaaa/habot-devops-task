@@ -1,12 +1,11 @@
-# HabotConnect Hiring Project — Junior Cloud & DevOps Engineer
+# HabotConnect Project
 
-**Submitted by:** [YOUR FULL NAME HERE]
-**Contact:** [YOUR EMAIL HERE]
-**Date:** [DATE]
-**Repository:** [YOUR GITHUB REPO LINK HERE]
+**Submitted by:** Fathima Fiza C P
+**Date:** 13 Sep 2026
+**Repository:** https://github.com/fizaaaaaaaa/habot-devops-task
 
 ## What this project is
-A take-home hiring project simulating a real staging incident: a junior developer
+HabotConnect project is simulating a real staging incident: a junior developer
 left unencrypted API credentials in code and caused a database schema mismatch.
 This submission restores system integrity across three areas — secure cloud
 infrastructure, an automated build gate, and strict data validation.
@@ -128,12 +127,3 @@ python demo_run.py
 - `incorrect_demo_run.png` — missing guardian consent correctly rejected
 
 ---
-
-## Submission checklist
-- [x] Terraform, YAML, and Python code delivered in a structured folder layout
-- [x] Presentation (max 15 slides) with architecture overview and logic flow
-- [x] Fail-closed gate demonstrated with before/after evidence
-- [x] Schema-mapping spreadsheet uses Wrap Text and full field names throughout
-- [ ] Name and contact info filled in on this README, the presentation, and the answer document
-- [ ] Submitted via the Google Form: https://forms.gle/qaTCAxi3YA8MCN196
-- [ ] Submitted before the deadline: 13 September 2026
