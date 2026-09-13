@@ -8,4 +8,4 @@
 # --- GOOD (how it should actually be done) ---
 import os
 
-api_key = os.environ.get("HABOT_API_KEY")  # pulled from a secret manager / env var, never hardcoded
+#api_key = os.environ.get("HABOT_API_KEY")  # pulled from a secret manager / env var, never hardcoded
