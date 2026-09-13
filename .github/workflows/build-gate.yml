@@ -1,0 +1,115 @@
+# =============================================================================
+# HabotConnect Hiring Project — Task 2: Poka-Yoke Automated CI/CD Build Gate
+# Submitted by: [YOUR FULL NAME HERE]
+# Contact: [YOUR EMAIL HERE]
+#
+# Purpose: This pipeline is "fail-closed" — meaning the default outcome of any
+# uncertainty or error is REJECTION, not approval. If formatting is wrong, if a
+# secret key is detected, or if any check errors out, the whole build stops and
+# nothing proceeds toward deployment.
+# =============================================================================
+
+name: Habot Poka-Yoke Build Gate
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+# If a newer commit lands while this is running, cancel the old run — never
+# let a stale, possibly-fixed run report a false pass
+concurrency:
+  group: build-gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Job 1: Code formatting / lint check (Python + Terraform)
+  # ---------------------------------------------------------------------------
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Python lint tools
+        run: pip install black flake8
+
+      - name: Run Black (formatting check — fails if not auto-formatted)
+        run: black --check task3-django/
+
+      - name: Run Flake8 (style / lint check)
+        run: flake8 task3-django/ --max-line-length=100
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform fmt check (fails on any formatting drift)
+        run: terraform -chdir=task1-terraform fmt -check -recursive
+
+      - name: Terraform validate (fails on any syntax/config error)
+        run: |
+          cd task1-terraform
+          terraform init -backend=false
+          terraform validate
+
+  # ---------------------------------------------------------------------------
+  # Job 2: Secret scanning — the critical fail-closed control from the scenario
+  # (a junior dev leaving raw API keys in code)
+  # ---------------------------------------------------------------------------
+  secret-scan:
+    name: Secret Scan (Gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history so Gitleaks can scan past commits too
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITLEAKS_ENABLE_SUMMARY: true
+        # No continue-on-error here — a detected secret hard-fails this job,
+        # which hard-fails the whole workflow (see 'quarantine' job below)
+
+  # ---------------------------------------------------------------------------
+  # Job 3: Quarantine — this job only runs if EITHER prior job failed, and it
+  # exists purely to make the "fail-closed, halt, and quarantine" behavior
+  # explicit and visible in the Actions log / PR checks, rather than silent.
+  # ---------------------------------------------------------------------------
+  quarantine_on_failure:
+    name: Quarantine Build
+    needs: [lint, secret-scan]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mark build as quarantined
+        run: |
+          echo "::error::Build failed a Poka-Yoke gate (lint, format, or secret scan)."
+          echo "::error::This commit is QUARANTINED and is blocked from deploying."
+          exit 1
+
+  # ---------------------------------------------------------------------------
+  # Job 4: Deploy — only reachable if lint AND secret-scan both passed cleanly.
+  # This is what makes the whole pipeline "fail-closed": deployment is opt-in
+  # via success, not opt-out via absence of failure.
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy (only on clean build)
+    needs: [lint, secret-scan]
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy step (placeholder — real deploy commands go here)
+        run: echo "All gates passed. Proceeding to deployment."
