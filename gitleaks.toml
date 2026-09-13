@@ -4,6 +4,9 @@
 
 title = "Habot Gitleaks Config"
 
+[extend]
+useDefault = true
+
 [[rules]]
 id = "habot-generic-api-key"
 description = "Generic hardcoded API key/secret assigned in code"

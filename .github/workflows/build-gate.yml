@@ -77,6 +77,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITLEAKS_ENABLE_SUMMARY: true
+          GITLEAKS_CONFIG: .gitleaks.toml
         # No continue-on-error here — a detected secret hard-fails this job,
         # which hard-fails the whole workflow (see 'quarantine' job below)
 
