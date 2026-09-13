@@ -57,7 +57,7 @@ resource "google_kms_crypto_key_iam_member" "gcs_can_use_key" {
 resource "google_storage_bucket" "raw_landing" {
   name                        = "${var.gcp_project_id}-d0-raw-landing"
   location                    = var.gcp_region
-  uniform_bucket_level_access = true # forces IAM-only access control, no legacy per-object ACLs
+  uniform_bucket_level_access = true  # forces IAM-only access control, no legacy per-object ACLs
   force_destroy               = false # safety net: refuses to delete a non-empty bucket
 
   versioning {
@@ -85,7 +85,7 @@ resource "google_storage_bucket_iam_member" "raw_landing_writer" {
 # Task 1b: D1 Staged/Enforced dataset (BigQuery)
 # ----------------------------------------------------------------------------
 resource "google_bigquery_dataset" "staged_enforced" {
-  dataset_id                 = "d1_staged_enforced"
+  dataset_id                  = "d1_staged_enforced"
   friendly_name               = "D1 Staged Enforced"
   location                    = var.gcp_region
   description                 = "Schema-validated, access-controlled student and LSA data"
@@ -102,8 +102,8 @@ resource "google_bigquery_dataset" "staged_enforced" {
   }
 
   access {
-    role           = "WRITER"
-    user_by_email  = var.ingestion_service_account
+    role          = "WRITER"
+    user_by_email = var.ingestion_service_account
   }
 }
 
@@ -120,11 +120,11 @@ resource "google_bigquery_table" "students" {
 # to them, even though they have READ access to the table itself
 # -----------------------------------------------------------------------------
 resource "google_bigquery_row_access_policy" "lsa_own_students_only" {
-  project               = var.gcp_project_id
-  dataset_id            = google_bigquery_dataset.staged_enforced.dataset_id
-  table_id              = google_bigquery_table.students.table_id
-  policy_id             = "lsa_scope"
-  filter_predicate      = "assigned_lsa_email = SESSION_USER()"
-  grantees              = ["user:${var.lsa_group_email}"]
+  project          = var.gcp_project_id
+  dataset_id       = google_bigquery_dataset.staged_enforced.dataset_id
+  table_id         = google_bigquery_table.students.table_id
+  policy_id        = "lsa_scope"
+  filter_predicate = "assigned_lsa_email = SESSION_USER()"
+  grantees         = ["user:${var.lsa_group_email}"]
 
 }

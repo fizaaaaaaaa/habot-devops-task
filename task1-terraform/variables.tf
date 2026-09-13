@@ -20,5 +20,5 @@ variable "lsa_group_email" {
   description = "Identity the Row-Level Security policy is scoped to. In production this would be a real Google Workspace group (e.g. lsa-staff@habot.io); for this demo, use your own Google account email so Terraform can verify the identity actually exists."
   type        = string
   # Replace with YOUR OWN Google account email for the demo to succeed.
-  default     = "fizahello01@gmail.com"
+  default = "fizahello01@gmail.com"
 }
