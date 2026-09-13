@@ -3,9 +3,9 @@
 # the pipeline turning RED and blocking a bad commit, then show it fixed.
 
 # --- BAD (this is what the gate should catch) ---
- api_key = "REPLACE_ME_HARDCODED_SECRET_abcdef1234567890"
+# api_key = "REPLACE_ME_HARDCODED_SECRET_abcdef1234567890"
 
 # --- GOOD (how it should actually be done) ---
 import os
 
-api_key = os.environ.get("HABOT_API_KEY")  # pulled from a secret manager / env var, never hardcoded
+#api_key = os.environ.get("HABOT_API_KEY")  # pulled from a secret manager / env var, never hardcoded
