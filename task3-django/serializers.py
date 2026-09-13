@@ -14,8 +14,14 @@ from datetime import date
 
 from rest_framework import serializers
 
-from .dcyn import DCYNValidationError, dcyn_batch
-from .models import Student
+try:
+    from .dcyn import DCYNValidationError, dcyn_batch
+    from .models import Student
+except ImportError:
+    # Falls back to a plain import when run as a standalone script (e.g.
+    # demo_run.py) rather than as part of an installed Django app package.
+    from dcyn import DCYNValidationError, dcyn_batch
+    from models import Student
 
 # Fields in the incoming payload that MUST be binary yes/no decisions.
 DCYN_FIELDS = [
@@ -36,9 +42,7 @@ class StudentOnboardingSerializer(serializers.ModelSerializer):
             "(e.g. STU-2026-00417)."
         },
     )
-    full_name = serializers.CharField(
-        min_length=2, max_length=150, trim_whitespace=True
-    )
+    full_name = serializers.CharField(min_length=2, max_length=150, trim_whitespace=True)
     date_of_birth = serializers.DateField()
     assigned_lsa_email = serializers.EmailField()
     learning_needs = serializers.CharField(
@@ -95,9 +99,7 @@ class StudentOnboardingSerializer(serializers.ModelSerializer):
         # data cannot be onboarded at all without guardian consent.
         if attrs["guardian_consent_given"] == "NO":
             raise serializers.ValidationError(
-                {
-                    "guardian_consent_given": "Cannot onboard a student without guardian consent."
-                }
+                {"guardian_consent_given": "Cannot onboard a student without guardian consent."}
             )
 
         return attrs

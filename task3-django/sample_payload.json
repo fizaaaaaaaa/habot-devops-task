@@ -4,8 +4,8 @@
   "date_of_birth": "2016-04-12",
   "assigned_lsa_email": "priya.k@habot.io",
   "learning_needs": "Dyslexia support, extended reading time",
-  "guardian_consent_given": "Yes",
-  "requires_one_on_one_support": "true",
+  "guardian_consent_given": "yes",
+  "requires_one_on_one_support": "yes",
   "has_prior_iep_or_504_plan": "N",
   "data_sharing_consent": "1"
 }

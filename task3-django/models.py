@@ -31,4 +31,5 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
+        app_label = "contenttypes"  # piggybacks on an already-installed app for this standalone demo
         db_table = "students"
